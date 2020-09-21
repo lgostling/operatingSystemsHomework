@@ -2,7 +2,7 @@
 #define _COMMON_H_
 
 // file path for chared memory.
-#define PATH "C:/Users/lukegostling/Desktop/school/csc246/homework/2"
+#define PATH "/afs/unity.ncsu.edu/users/l/lpgostli"
 
 struct Sequence {
     int numValues;
