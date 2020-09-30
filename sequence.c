@@ -34,7 +34,7 @@ int toInt(char* c) {
 }
 
 int main( int argc, char *argv[] ) {
-    lock = sem_open("/lock", O_CREAT, 0644, 1);
+    lock = sem_open("/lock", O_EXCL);
     sem_wait(lock);
     char *path = "C:/Users/lukegostling/Desktop/school/csc246/homework/2";
     key_t key = ftok(path, 'S');
