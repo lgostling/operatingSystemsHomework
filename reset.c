@@ -29,7 +29,7 @@ int main( int argc, char *argv[] ) {
     if(argc > 11 || argc < 1) {
         invalid = true;
     }
-
+    
     if(!invalid) { 
         for(int i = 0; i < argc - 1; i++) {
             for(int c = 0; c < strlen( argv[i + 1] ); c++) {
@@ -54,5 +54,7 @@ int main( int argc, char *argv[] ) {
         ptr->values[i] = atoi(argv[i + 1]);
     }
 
+    sem_open("/lpgostli-sequence-lock", O_CREAT, 0600, 1);
+    
     return EXIT_SUCCESS;
 }
