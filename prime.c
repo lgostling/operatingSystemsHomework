@@ -75,9 +75,9 @@ void readList() {
 
 /** Start routine for each worker. */
 void *workerRoutine( void *arg ) {
-  int my_total = 0;
   int p = getWork();
   while(p != -1) {
+    // check value for prime
     bool prime = true;
     if(p % 2 == 0) {
       prime = false;
@@ -94,7 +94,6 @@ void *workerRoutine( void *arg ) {
       // increment count
       sem_wait(&countLock);
       total += 1;
-      my_total += 1;
       sem_post(&countLock);
       // report as nessisary
       if(report) {
@@ -104,7 +103,6 @@ void *workerRoutine( void *arg ) {
     p = getWork();
   }
 
-  printf("%d\n", my_total);
   return NULL;
 }
 
