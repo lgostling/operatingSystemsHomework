@@ -6,6 +6,8 @@
 #include <string.h>
 #include <sys/shm.h>
 
+sem_t *lock;
+
 // Print out an error message and exit.
 static void fail( char const *message ) {
     fprintf( stderr, "%s\n", message );
@@ -32,6 +34,8 @@ int toInt(char* c) {
 }
 
 int main( int argc, char *argv[] ) {
+    lock = sem_open("/lock", O_CREAT, 0644, 1);
+    sem_wait(lock);
     char *path = "C:/Users/lukegostling/Desktop/school/csc246/homework/2";
     key_t key = ftok(path, 'S');
     int id = shmget(key, sizeof(Sequence), 0666 | IPC_CREAT);
@@ -42,30 +46,45 @@ int main( int argc, char *argv[] ) {
         for(int i = 0; i < ptr->numValues; i++) {
             printf("%d ", ptr->values[i]);
         }
+        sem_post(lock);
         printf("\n");
         return EXIT_SUCCESS;
     } else if(strcmp(argv[1], "inc") == 0) {
         if(argc != 3) { usage(); }
         int i = toInt(argv[2]);
-        if(i < 0 || i >= ptr->numValues) { fail("error"); }
+        if(i < 0 || i >= ptr->numValues) {
+            sem_post(lock);
+            fail("error");
+        }
         ptr->values[i]++;
     } else if(strcmp(argv[1], "dec") == 0) {
         if(argc != 3) { usage(); }
         int i = toInt(argv[2]);
-        if(i < 0 || i >= ptr->numValues) { fail("error"); }
+        if(i < 0 || i >= ptr->numValues) {
+            sem_post(lock);
+            fail("error");
+        }
         ptr->values[i]--;
     } else if(strcmp(argv[1], "swap") == 0) {
         if(argc != 4) { usage(); }
         int a = toInt(argv[2]);
         int b = toInt(argv[3]);
-        if(a < 0 || a >= ptr->numValues) { fail("error"); }
-        if(b < 0 || b >= ptr->numValues) { fail("error"); }
+        if(a < 0 || a >= ptr->numValues) {
+            sem_post(lock);
+            fail("error");
+        }
+        if(b < 0 || b >= ptr->numValues) {
+            sem_post(lock);
+            fail("error");
+        }
         int x = ptr->values[a];
         ptr->values[a] = ptr->values[b];
         ptr->values[b] = x;
     } else {
+        sem_post(lock);
         usage();
     }
+    sem_post(lock);
     printf("success\n");
     return EXIT_SUCCESS;
 }
