@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/shm.h>
+#include <semaphore.h>
 
 
 // Print out an error message and exit.
